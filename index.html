@@ -157,7 +157,7 @@ function mount(doc){
    const label=a.source_system==='league_hq'?(a.league_name?a.league_name+' · ':'')+a.source_title:a.source_title;
    planner.hidden=false;
    planner.innerHTML=`<div class="row"><div><div class="eyeline"><span class="chip">PRIVATE SOURCE</span><span class="chip warn">Private configuration</span></div><h3 style="margin:6px 0">${esc(label)}</h3><div class="meta">${esc(a.event_start_on||'Date not set')} · Source ${esc(a.source_event_id)}</div></div><button type="button" id="plan-close" class="btn ghost">Close</button></div>
-    <p class="locked">Source-bound private draft configuration. Saving writes only a private offering; payment collection, waiver activation and public publication are NOT enabled. Date fields are stored at 00:00 UTC (not local business hours).</p>
+    <p class="locked">Source-bound private draft configuration. Save privately first, then use Waivers & publish for eligible free adult registrations. Payment collection remains disabled. Date fields are stored at 00:00 UTC (not local business hours).</p>
     <div class="grid2"><label class="field">Registration type<select id="plan-kind"><option value="">Choose a type</option>${allowedKinds[a.source_system].map(kind=>`<option value="${kind}">${kind==='tournament_player'?'Tournament player':kind[0].toUpperCase()+kind.slice(1)}</option>`).join('')}</select></label>
     <label class="field">Capacity<input type="number" id="plan-capacity" min="1" max="100000" placeholder="Enter capacity"></label>
     <label class="field">Fee per registration ($)<input type="number" id="plan-fee" min="0" step="0.01" placeholder="e.g. 30.00"></label>
@@ -165,7 +165,7 @@ function mount(doc){
     <label class="field">Registration opens<input id="plan-opens" type="date"></label><label class="field">Registration closes<input id="plan-closes" type="date"></label>
     <label class="field">Minimum age<input id="plan-minage" type="number" min="0" max="120" placeholder="Set eligibility"></label></div>
     <div class="check"><label><input type="checkbox" id="plan-review"> I have reviewed these private registration settings</label></div>
-    <div class="actionbar"><button class="btn ghost" type="button" id="plan-preview">Review draft</button><button class="btn" type="button" id="plan-save">Save private draft</button><span class="meta">Only an authorized director can save. Publication remains disabled.</span></div>
+    <div class="actionbar"><button class="btn ghost" type="button" id="plan-preview">Review draft</button><button class="btn" type="button" id="plan-save">Save private draft</button><span class="meta">Only an authorized director can save; publishing requires a separate reviewed action.</span></div>
     <div id="plan-result" role="status" aria-live="polite"></div>`;
    const q=id=>planner.querySelector('#'+id);
    for(const [id,key] of [['plan-kind','kind'],['plan-capacity','capacity'],['plan-fee','fee'],['plan-opens','opens'],['plan-closes','closes'],['plan-minage','minAge'],['plan-payment','payment']])q(id).value=previous[key]||'';
@@ -250,6 +250,27 @@ function mount(doc){
    };
    planner.scrollIntoView({behavior:'smooth',block:'start'});
  }
+ async function openPublish(o){
+   planner.hidden=false;
+   planner.innerHTML=`<div class="row"><div><h3>Waivers & publication</h3><div class="meta">${esc(o.title)} · Offering ${esc(o.id)}</div></div><button class="btn ghost" type="button" id="pub-close">Close</button></div>
+   <p class="locked">Publication makes this offering publicly discoverable when its registration dates are active. Use only approved waiver language for real participants. Paid and minor pathways remain disabled.</p>
+   <div id="pub-feedback" role="status" aria-live="polite" class="meta">Loading organization waiver versions…</div>
+   <label class="field" style="margin:12px 0">Existing waiver version<select id="pub-waiver-select"><option value="">Choose a waiver version</option></select></label>
+   <button class="btn ghost" type="button" id="pub-assign">Assign as required</button>
+   <details style="margin-top:16px"><summary>Create new immutable waiver version</summary><div style="display:grid;gap:10px;margin-top:12px"><label class="field">Waiver title<input id="pub-new-title" maxlength="160" placeholder="Approved waiver title"></label><label class="field">Version label<input id="pub-new-version" maxlength="40" placeholder="2026-11-v1"></label><label class="field">Waiver text<textarea id="pub-new-content" rows="8" maxlength="20000" style="width:100%" placeholder="Paste your approved waiver language here"></textarea></label><button class="btn ghost" type="button" id="pub-create">Create immutable version</button></div></details>
+   <div class="check" style="margin-top:16px"><label><input type="checkbox" id="pub-confirm"> I have verified waiver content and understand publishing may expose this offering and its waiver publicly.</label></div>
+   <div class="actionbar"><button class="btn" type="button" id="pub-publish">Publish free adult registration</button><span class="meta">No payment or clearance activation</span></div>`;
+   const q=id=>planner.querySelector('#'+id), msg=q('pub-feedback');
+   q('pub-close').onclick=()=>{planner.hidden=true;};
+   let inFlight=false;
+   const invoke=async(name,args)=>{const {data,error}=await connection().rpc(name,args);if(error)throw Error(error.message);return data;};
+   const list=async()=>{const data=await invoke('rhq_r22_director_waivers_v1');if(!data?.read_only||!Array.isArray(data.items))throw Error('Unexpected waiver library');const select=q('pub-waiver-select');select.replaceChildren(new Option('Choose a waiver version',''));for(const w of data.items)select.add(new Option(`${w.title} · ${w.version_label} · ${w.content_sha256.slice(0,12)}…`,w.id));msg.textContent=`${data.items.length} organization waiver version(s) available. Assign at least one as required before publishing.`;};
+   q('pub-create').onclick=async()=>{if(inFlight)return;inFlight=true;try{const title=q('pub-new-title').value.trim(),version=q('pub-new-version').value.trim(),content=q('pub-new-content').value;if(content.trim().length<50)throw Error('Enter your full waiver wording (at least 50 characters).');if(!confirm(`Create a new immutable waiver version: ${title} · ${version}?`))return;const result=await invoke('rhq_r22_create_waiver_version_v1',{p_title:title,p_version_label:version,p_content:content});await list();q('pub-waiver-select').value=result.waiver_version_id;msg.textContent='Waiver version created. Next, assign it to this offering.';}catch(e){msg.textContent='Waiver not created: '+e.message;}finally{inFlight=false;}};
+   q('pub-assign').onclick=async()=>{if(inFlight)return;inFlight=true;try{const id=q('pub-waiver-select').value;if(!uuid.test(id))throw Error('Choose a waiver version.');const result=await invoke('rhq_r22_set_required_waiver_v1',{p_offering_id:o.id,p_waiver_version_id:id});if(!result?.required)throw Error('Assignment not confirmed.');msg.textContent='Required waiver assigned to this offering. Verify all settings before publication.';}catch(e){msg.textContent='Waiver not assigned: '+e.message;}finally{inFlight=false;}};
+   q('pub-publish').onclick=async()=>{if(inFlight)return;inFlight=true;try{if(!q('pub-confirm').checked)throw Error('Confirm that you have reviewed publication consequences.');if(!confirm(`PUBLISH offering ${o.title} (${o.id})? It may become visible to the public within its scheduled registration window. This action cannot be undone through the draft editor.`))return;const result=await invoke('rhq_r22_publish_free_adult_v1',{p_offering_id:o.id});if(result?.status!=='open'||result?.catalog_enabled!==true)throw Error('Publication response needs review.');msg.textContent='Published. Visible in catalog now: '+(result.visible_now?'YES':'NO (outside the configured registration dates)')+'. Required waivers: '+result.required_waiver_count+'.';await refreshOfferings();}catch(e){msg.textContent='Not confirmed published: '+e.message;}finally{inFlight=false;}};
+   try{await list()}catch(e){msg.textContent='Cannot load waiver library: '+e.message;}
+   planner.scrollIntoView({behavior:'smooth',block:'start'});
+ }
  function draw(){cards.replaceChildren();if(!records)return;
  const counts=new Map();for(const a of records){const key=a.source_system+'|'+a.source_title+'|'+(a.event_start_on||'');counts.set(key,(counts.get(key)||0)+1);}
  for(const a of records){
@@ -272,6 +293,7 @@ function mount(doc){
   const actions=doc.createElement('div');actions.style.cssText='display:flex;flex-direction:column;gap:8px;align-items:flex-start';actions.append(badge);
   const choose=doc.createElement('button');choose.className='btn ghost';choose.type='button';choose.textContent='Plan registration';
   choose.addEventListener('click',()=>openPlanner(a));actions.append(choose);
+  for(const o of saved){if(o.status==='draft' && !o.catalog_enabled && !o.catalog_published_at && o.registration_kind==='individual' && o.payment_mode==='free' && o.fee_cents===0){const manage=doc.createElement('button');manage.className='btn ghost';manage.type='button';manage.style.fontSize='12px';manage.textContent='Waivers & publish';manage.addEventListener('click',()=>openPublish(o));actions.append(manage);}}
   for(const o of saved){if(o.status!=='draft'||o.catalog_enabled||o.catalog_published_at)continue;const edit=doc.createElement('button');edit.className='btn ghost';edit.type='button';edit.style.fontSize='12px';edit.textContent='Edit '+o.registration_kind.replace('_',' ');edit.addEventListener('click',()=>{planState.set(a.source_system+'|'+a.source_event_id,{kind:o.registration_kind});openPlanner(a);});actions.append(edit);}
   card.append(details,actions);cards.append(card);
  }}
@@ -303,7 +325,7 @@ function mount(doc){
      draw();message(records.length+' private sources loaded · read-only. Parent league names unavailable: '+(labelError?.message||'lookup failed')+'. Source IDs remain visible.');
    }
    await refreshOfferings();
-   message(records.length+' private sources · '+offerings.length+' saved offering'+(offerings.length===1?'':'s')+' verified. Private drafts are not published.');
+   message(records.length+' private sources · '+offerings.length+' saved offering'+(offerings.length===1?'':'s')+' verified. Private drafts are not published unless explicitly approved.');
    }catch(e){records=null;offerings=[];draw();message(e.message||'Unable to load sources');}finally{busy=false;}};
  root.querySelector('#priv-out').onclick=async()=>{try{await client?.auth.signOut();}catch{}records=null;offerings=[];planState.clear();selectedSource=null;planner.hidden=true;planner.replaceChildren();draw();message('Signed out. Private source records and local plans cleared.');};
 }
