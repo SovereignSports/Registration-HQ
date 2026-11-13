@@ -34,21 +34,36 @@
 
 <div id="uw-status" role="status" aria-live="polite">Loading current universal waiver…</div>
 <div id="uw-signing" hidden>
-<h3 id="uw-title" style="margin-bottom:8px"></h3><div id="uw-document" tabindex="0" role="region" aria-label="Universal waiver agreement"><div id="uw-text"></div><section id="uw-venue-section" aria-label="Covered venues"><h4 style="margin:14px 0 4px">Covered venues for this agreement</h4><p id="uw-venues" style="font-size:13px;color:#314b60;margin:0"></p></section></div>
-<div class="uw-fields">
-<label>Participant full legal name<input id="uw-name" autocomplete="name" maxlength="120"></label>
-<label>Date of birth<input id="uw-dob" type="date"></label>
-<label>Email address<input id="uw-email" type="email" autocomplete="email"></label>
-<label>Phone<input id="uw-phone" type="tel" autocomplete="tel" maxlength="40"></label>
-<label>Emergency contact name<input id="uw-emergency-name" maxlength="120"></label>
-<label>Emergency contact phone<input id="uw-emergency-phone" type="tel" maxlength="40"></label>
-</div>
-<p style="font-size:12px;color:#52657b;margin:8px 0 12px">Email is for contact only. No account or verification code is required to sign.</p>
-<fieldset style="border:1px solid #d5dee7;border-radius:8px;margin:12px 0"><legend>Optional promotional photo/video permission</legend><label class="uw-check"><input type="radio" name="uw-media" value="yes">Yes, I permit promotional use</label><label class="uw-check"><input type="radio" name="uw-media" value="no">No, I do not permit promotional use</label><p style="font-size:12px;color:#596b7d;margin:5px 0">Optional; if neither choice is selected, no promotional permission is granted.</p></fieldset>
-<label class="uw-check"><input id="uw-accept" type="checkbox">I have read the full universal waiver shown above and agree to its terms.</label>
-<label class="uw-check" style="margin-top:9px"><input id="uw-electronic" type="checkbox">I consent to signing electronically and intend my typed name to serve as my signature.</label>
-<label style="margin-top:12px">Type your full legal name as your signature<input id="uw-signature" maxlength="120" autocomplete="off"></label>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:15px"><button id="uw-sign" type="button" class="btn">Sign universal waiver</button></div>
+  <div class="uw-progress" aria-label="Waiver completion progress"><span id="uw-step-count">Step 1 of 4</span><div class="uw-progress-track"><div id="uw-progress-fill"></div></div></div>
+  <section class="uw-card" data-uw-step="0" aria-label="Participant details">
+    <div class="uw-kicker">Participant details</div><h3>Tell us about yourself</h3><p class="uw-subtitle">We’ll use this information for your waiver record.</p>
+    <div class="uw-fields">
+      <label>Full legal name<input id="uw-name" autocomplete="name" maxlength="120"></label>
+      <label>Date of birth<input id="uw-dob" type="date"></label>
+      <label>Email address<input id="uw-email" type="email" autocomplete="email"></label>
+      <label>Phone number<input id="uw-phone" type="tel" autocomplete="tel" maxlength="40"></label>
+    </div>
+  </section>
+  <section class="uw-card" data-uw-step="1" aria-label="Emergency contact" hidden>
+    <div class="uw-kicker">Emergency contact</div><h3>Who should we contact if needed?</h3><p class="uw-subtitle">Provide someone we can reach in an emergency.</p>
+    <div class="uw-fields">
+      <label>Emergency contact name<input id="uw-emergency-name" maxlength="120"></label>
+      <label>Emergency contact phone<input id="uw-emergency-phone" type="tel" maxlength="40"></label>
+    </div>
+  </section>
+  <section class="uw-card" data-uw-step="2" aria-label="Waiver review" hidden>
+    <div class="uw-kicker">Waiver review</div><h3 id="uw-title"></h3><p class="uw-subtitle">Please read the agreement and the covered venues before continuing.</p>
+    <div id="uw-document" tabindex="0" role="region" aria-label="Universal waiver agreement"><div id="uw-text"></div><section id="uw-venue-section" aria-label="Covered venues"><h4 style="margin:14px 0 4px">Covered venues for this agreement</h4><p id="uw-venues" style="font-size:13px;color:#314b60;margin:0"></p></section></div>
+  </section>
+  <section class="uw-card" data-uw-step="3" aria-label="Sign waiver" hidden>
+    <div class="uw-kicker">Final step</div><h3>Review and sign</h3><p class="uw-subtitle">Your signature acknowledges the agreement you just reviewed.</p>
+    <fieldset class="uw-media"><legend>Promotional photo/video permission (optional)</legend><label class="uw-check"><input type="radio" name="uw-media" value="yes">Yes, I permit promotional use</label><label class="uw-check"><input type="radio" name="uw-media" value="no">No, I do not permit promotional use</label><p class="uw-hint">If you don't choose, permission is not granted.</p></fieldset>
+    <label class="uw-check"><input id="uw-accept" type="checkbox">I have read the universal waiver and agree to its terms, including the release of liability.</label>
+    <label class="uw-check"><input id="uw-electronic" type="checkbox">I agree to sign electronically and intend my typed name to serve as my signature.</label>
+    <label class="uw-signature-label">Type your full legal name as your signature<input id="uw-signature" maxlength="120" autocomplete="off"></label>
+  </section>
+  <div id="uw-card-error" role="alert" aria-live="polite" hidden></div>
+  <div class="uw-actions"><button id="uw-back" type="button" class="secondary" hidden>Back</button><button id="uw-next" type="button" class="btn">Continue</button><button id="uw-sign" type="button" class="btn" hidden>Submit waiver</button></div>
 </div>
 <section id="uw-thank-you" hidden aria-labelledby="uw-thank-you-heading" style="text-align:center;padding:38px 16px"><div aria-hidden="true" style="font-size:38px;color:#226747">✓</div><h2 id="uw-thank-you-heading">Thank you for your submission!</h2><p>Your universal participant waiver has been received.</p><p style="color:#52657b;font-size:13px">You may close this page.</p></section>
 
@@ -837,12 +852,55 @@ window.addEventListener('load',handleReturn);
 })();
 </script><style>
 #universal-workspace{background:#fff;border:1px solid #dce3eb;border-radius:14px;padding:20px;margin:14px 0}#universal-workspace .uw-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#universal-workspace label{display:grid;gap:5px;font-size:13px;font-weight:650}#universal-workspace input,#universal-workspace select{border:1px solid #bdcbd8;border-radius:8px;padding:10px;width:100%}#universal-workspace .uw-check{display:flex;align-items:flex-start;gap:8px;font-weight:400}#universal-workspace .uw-check input{width:auto;margin-top:3px}#uw-document{border:1px solid #d5dee7;background:#f7f9fb;padding:16px;border-radius:9px;max-height:440px;overflow:auto;font-size:14px}#uw-text{white-space:pre-wrap}#uw-venue-section{border-top:1px solid #cbd5e1;margin-top:14px;padding-top:8px}#uw-thank-you[hidden]{display:none!important}body.uw-confirmed #uw-signing,body.uw-confirmed #uw-status,body.uw-confirmed #uw-heading{display:none!important}#uw-status,#uw-director-status{white-space:pre-wrap;padding:11px;background:#eef3f8;border-radius:8px;font-size:13px}#uw-sign[disabled]{opacity:.5}body.uw-standalone .shell>*:not(#universal-workspace){display:none!important}body.uw-standalone footer{display:none!important}body.uw-standalone .shell{max-width:710px}body:not(.uw-standalone) #universal-workspace{display:none!important}body.uw-standalone #uw-dir{display:none!important}#uw-dir{margin-bottom:14px}#uw-dir select{width:100%;padding:10px;border:1px solid #bdcbd8;border-radius:8px}#uw-dir button{min-height:42px}@media(max-width:620px){#universal-workspace .uw-fields{grid-template-columns:1fr}#universal-workspace{padding:14px}}
+
+/* R1.5 — universal waiver: the approved one-card-at-a-time participant experience */
+#universal-workspace .uw-card{background:white;min-height:260px;padding:8px 0 4px}#universal-workspace .uw-card[hidden]{display:none!important}
+.uw-kicker{text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.13em;color:#96713a}.uw-card h3{font-size:23px;line-height:1.25;margin:8px 0}.uw-subtitle{color:#607083;margin:0 0 20px;font-size:14px}
+.uw-progress{display:flex;align-items:center;gap:12px;font-size:12px;color:#617489;margin:12px 0 23px;white-space:nowrap}.uw-progress-track{height:6px;border-radius:10px;background:#e8edf2;flex:1;overflow:hidden}#uw-progress-fill{height:100%;background:#ae8650;width:25%;transition:width .18s ease}
+.uw-actions{display:flex;gap:10px;justify-content:space-between;border-top:1px solid #e3e9ef;margin-top:24px;padding-top:17px}.uw-actions #uw-next,.uw-actions #uw-sign{margin-left:auto;min-width:130px}.uw-actions button[hidden]{display:none!important}
+#uw-card-error{color:#943c3c;background:#fff0ee;padding:10px 13px;border-radius:9px;margin:12px 0}#uw-card-error[hidden]{display:none!important}
+#universal-workspace .uw-media{border:1px solid #d5dee7;border-radius:9px;margin:12px 0;padding:12px}#universal-workspace .uw-media legend{font-weight:700;font-size:14px}.uw-hint{font-size:12px;color:#627386;margin:6px 0}.uw-signature-label{display:grid;gap:6px;margin-top:15px;font-weight:650}
+body.uw-standalone #uw-status:empty{display:none!important}
+@media(max-width:620px){#universal-workspace .uw-card h3{font-size:21px}.uw-actions button{min-height:44px}}
 </style>
 
 <script>
 (()=>{'use strict';
 const e=id=>document.getElementById(id),say=s=>e('uw-status').textContent=s,dsay=s=>e('uw-director-status').textContent=s;
 let packet=null;
+let uwStep=0;
+const uwCards=[...document.querySelectorAll('#uw-signing [data-uw-step]')];
+function uwShowStep(n){
+ uwStep=n;
+ uwCards.forEach((card,i)=>{card.hidden=i!==n});
+ e('uw-step-count').textContent=`Step ${n+1} of ${uwCards.length}`;
+ e('uw-progress-fill').style.width=((n+1)/uwCards.length*100)+'%';
+ e('uw-back').hidden=n===0;e('uw-next').hidden=n===uwCards.length-1;e('uw-sign').hidden=n!==uwCards.length-1;
+ e('uw-card-error').hidden=true;e('uw-card-error').textContent='';
+}
+function uwValidateStep(n){
+ const value=id=>e(id).value.trim();
+ const phone=v=>(v.replace(/\D/g,'').length>=10&&v.replace(/\D/g,'').length<=15);
+ if(n===0){
+  if(value('uw-name').length<2) return 'Enter your full legal name.';
+  const dob=value('uw-dob');if(!/^\d{4}-\d{2}-\d{2}$/.test(dob))return 'Enter your date of birth.';
+  const birthday=new Date(dob+'T12:00:00');if(Number.isNaN(birthday.getTime()))return 'Enter a valid date of birth.';
+  const now=new Date();let age=now.getFullYear()-birthday.getFullYear();if(now.getMonth()<birthday.getMonth()||(now.getMonth()===birthday.getMonth()&&now.getDate()<birthday.getDate()))age--;
+  if(age<18) return 'This connected waiver is currently available to adults 18 and older.';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value('uw-email')))return 'Enter a valid contact email.';
+  if(!phone(value('uw-phone')))return 'Enter a valid phone number.';
+ }
+ if(n===1){if(value('uw-emergency-name').length<2)return 'Enter an emergency contact name.';if(!phone(value('uw-emergency-phone')))return 'Enter a valid emergency contact phone number.';}
+ if(n===3){
+  if(!e('uw-accept').checked||!e('uw-electronic').checked)return 'Please accept both acknowledgments before signing.';
+  if(value('uw-signature').toLowerCase().replace(/\s+/g,' ')!==value('uw-name').toLowerCase().replace(/\s+/g,' '))return 'Your typed signature must match your full legal name.';
+ }
+ return '';
+}
+function uwError(message){e('uw-card-error').textContent=message;e('uw-card-error').hidden=false;}
+e('uw-next').onclick=()=>{const err=uwValidateStep(uwStep);if(err){uwError(err);return;}uwShowStep(uwStep+1);document.getElementById('uw-heading').scrollIntoView({block:'start',behavior:'smooth'});};
+e('uw-back').onclick=()=>{uwShowStep(Math.max(0,uwStep-1));document.getElementById('uw-heading').scrollIntoView({block:'start',behavior:'smooth'});};
+uwShowStep(0);
 const client=()=>window.RHQ_AUTH.client(window.RHQ_AUTH.publicKey());
 async function rpc(name,args){const {data,error}=await client().rpc(name,args||{});if(error)throw Error(error.message);return data;}
 async function directorRpc(name,args){const {data,error}=await client().auth.getUser();if(error||!data?.user||!data.user.email_confirmed_at)throw Error('Sign in once through the existing Director Hub, then return here.');return rpc(name,args);}
@@ -857,13 +915,15 @@ async function load(){
   e('uw-text').textContent=p.content;
   e('uw-venues').textContent=(p.covered_venues||[]).join(' • ');
   e('uw-signing').hidden=false;
-  say('Read the agreement, complete your details, and sign. No account or email verification is needed.');
+  say('');
+  uwShowStep(0);
  }catch(err){say('Unable to load the waiver right now. Please try again. ('+err.message+')');}
 }
 e('uw-sign').onclick=async()=>{
  const btn=e('uw-sign');btn.disabled=true;
  try{
-  if(!packet)throw Error('Reload the current universal waiver');
+  if(!packet)throw Error('The current universal waiver is unavailable. Please reopen this page.');
+  const validationError=uwValidateStep(3);if(validationError)throw Error(validationError);
   const name=e('uw-name').value.trim(),email=e('uw-email').value.trim(),signature=e('uw-signature').value.trim();
   if(!name||!email||!signature)throw Error('Enter your name, contact email and typed signature');
   if(!e('uw-accept').checked||!e('uw-electronic').checked)throw Error('Review both signing acknowledgments');
@@ -881,7 +941,7 @@ e('uw-sign').onclick=async()=>{
   // Navigate only after the server explicitly confirms the saved signature.
   const thankYouUrl=new URL(location.href);thankYouUrl.searchParams.set('waiver','thank-you');
   location.replace(thankYouUrl.toString());
- }catch(err){say('Signature not confirmed: '+err.message)}finally{btn.disabled=false;}
+ }catch(err){uwError('Signature not confirmed: '+err.message)}finally{btn.disabled=false;}
 };
 
 e('uw-dir-load').onclick=async()=>{try{const [lib,status,edition]=await Promise.all([directorRpc('rhq_r22_director_waivers_v1'),directorRpc('rhq_universal_director_manage_v1',{p_action:'status'}),directorRpc('rhq_universal_edition_status_v1')]);const select=e('uw-dir-waiver');select.replaceChildren(new Option('Select an existing version',''));for(const w of lib.items||[])select.add(new Option(w.title+' · '+w.version_label,w.id));if(status.active_waiver_version_id)select.value=status.active_waiver_version_id;if(edition.edition_year)e('uw-edition-year').value=String(edition.edition_year);if(edition.covered_venues)e('uw-covered-venues').value=edition.covered_venues.join('\n');dsay('Loaded '+(lib.items||[]).length+' versions. Active edition: '+(edition.edition_year||'none')+'. Signed records: '+status.total_signatures);}catch(err){dsay(err.message)}};
