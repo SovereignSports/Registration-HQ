@@ -263,7 +263,7 @@ function mount(doc){
    const label=a.source_system==='league_hq'?(a.league_name?a.league_name+' · ':'')+a.source_title:a.source_title;
    planner.hidden=false;
    planner.innerHTML=`<div class="row"><div><div class="eyeline"><span class="chip">PRIVATE SOURCE</span><span class="chip warn">Private configuration</span></div><h3 style="margin:6px 0">${esc(label)}</h3><div class="meta">${esc(a.event_start_on||'Date not set')} · Source ${esc(a.source_event_id)}</div></div><button type="button" id="plan-close" class="btn ghost">Close</button></div>
-    <p class="locked">Source-bound private draft configuration. Save privately first, then use Waivers & publish for eligible free adult registrations. Payment collection remains disabled. Date fields are stored at 00:00 UTC (not local business hours).</p>
+    <p class="locked">Source-bound private draft configuration. Save privately first, then use Waivers & publish for eligible free adult registrations. Payment collection remains disabled. Registration windows for League HQ seasons may extend past the start date. The source registry does not yet supply an end date, so verify the closing date against League HQ before publishing. Dates are currently stored at 00:00 UTC.</p>
     <div class="grid2"><label class="field">Registration type<select id="plan-kind"><option value="">Choose a type</option>${allowedKinds[a.source_system].map(kind=>`<option value="${kind}">${kind==='tournament_player'?'Tournament player':kind[0].toUpperCase()+kind.slice(1)}</option>`).join('')}</select></label>
     <label class="field">Capacity<input type="number" id="plan-capacity" min="1" max="100000" placeholder="Enter capacity"></label>
     <label class="field">Fee per registration ($)<input type="number" id="plan-fee" min="0" step="0.01" placeholder="e.g. 30.00"></label>
@@ -312,8 +312,8 @@ function mount(doc){
      if(p.payment!=='free'&&Number(p.fee)<=0)notes.push('Paid registrations must have a positive fee.');
      if(Number(p.capacity)>100000)notes.push('Capacity cannot exceed 100,000.');
      if(!/^\d+(?:\.\d{1,2})?$/.test(p.fee)||Math.round(Number(p.fee)*100)>100000000)notes.push('Fee must be a valid dollar amount with at most two decimal places.');
-     if(a.event_start_on&&p.closes>a.event_start_on)notes.push('Registration cannot close after the event date.');
-     if(!p.opens||!p.closes||p.opens>p.closes)notes.push('Enter valid opening and closing dates.');
+     if(a.source_system==='tournament_hq'&&a.event_start_on&&p.closes>a.event_start_on)notes.push('Tournament registration must close by the event date.');
+     if(!p.opens||!p.closes||p.opens>=p.closes)notes.push('Registration closing date must be after the opening date.');
      if(p.minAge===''||!Number.isSafeInteger(Number(p.minAge))||Number(p.minAge)<0||Number(p.minAge)>120)notes.push('Set a valid minimum age.');
      if(!p.reviewed)notes.push('Confirm you reviewed this local plan.');
      const result=q('plan-result');result.replaceChildren();const msg=doc.createElement('p');msg.className=notes.length?'alert':'locked';
@@ -463,8 +463,18 @@ function mount(doc){
    }catch(labelError){
      draw();message(records.length+' private sources loaded · read-only. Parent league names unavailable: '+(labelError?.message||'lookup failed')+'. Source IDs remain visible.');
    }
-   await refreshOfferings();
-   message(records.length+' private sources · '+offerings.length+' saved offering'+(offerings.length===1?'':'s')+' verified. Private drafts are not published unless explicitly approved.');
+   try {
+     await refreshOfferings();
+     message(records.length+' private sources · '+offerings.length+' saved offering'+(offerings.length===1?'':'s')+' verified. Private drafts are not published unless explicitly approved.');
+   } catch(offeringError) {
+     // Do not hide valid, authorized source records because a separate
+     // saved-offering readback failed. Keep financial editing disabled until
+     // its own verification succeeds; the server still enforces authorization.
+     offerings=[];
+     draw();
+     message(records.length+' private sources loaded, but saved offerings could not be verified: '+(offeringError?.message||'Unknown error')+'. Do not save drafts until this is resolved.');
+     root.querySelectorAll('#priv-cards button').forEach(button=>{button.disabled=true;button.title='Saved-offering verification unavailable';});
+   }
    }catch(e){records=null;offerings=[];draw();message(e.message||'Unable to load sources');}finally{busy=false;}};
  root.querySelector('#priv-out').onclick=async()=>{try{await client?.auth.signOut();}catch{}records=null;offerings=[];planState.clear();selectedSource=null;planner.hidden=true;planner.replaceChildren();draw();message('Signed out. Private source records and local plans cleared.');};
 }
