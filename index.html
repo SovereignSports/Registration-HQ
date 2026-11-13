@@ -28,7 +28,39 @@
 @media(max-width:620px){#intake-step-nav button{flex:1}#intake-stepper{gap:4px}.intake-step-pill{font-size:11px;padding:5px 8px}}
 </style><style id="r244-restore-style">.approved-public-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap;width:100%;color:#172e47;padding:8px 0}.approved-public-heading span{font-size:12px;color:#617489}#live-catalog{max-width:100%}#approved-public-frame{max-width:100%}#connected-registration-tests summary:focus-visible{outline:2px solid #b58d49;outline-offset:4px}</style></head><body>
 <header class="top"><div><div class="eyebrow">SOVEREIGN SPORTS</div><h1>Registration HQ <span style="font-weight:400;font-size:13px;color:#cbd6e0">/ R2.4.3 guided registration</span></h1><p>Director configuration preserved · Verified adult free-registration test</p></div><div class="pill">DEVELOPMENT · NOT LIVE</div></header>
-<main class="shell"><div class="notice"><strong>Prelaunch development workspace.</strong> Director and participant preview can be tested without signing in and never writes to Supabase. Connected director operations and real participant submissions still require server authorization. Paid, team and minor submissions and PayPal capture remain disabled.</div>
+<main class="shell">
+<section id="universal-workspace" aria-labelledby="uw-heading">
+<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div><div style="font-size:11px;color:#896c36;font-weight:800;letter-spacing:.1em">SOVEREIGN SPORTS</div><h2 id="uw-heading" style="margin:3px 0">Universal Participant Waiver</h2><p style="margin:3px 0;color:#53677b">Open play · leagues · tournaments · other Sovereign Sports activities</p></div><a id="uw-link" href="?waiver=universal" style="font-size:13px">Open standalone signing page</a></div>
+<p style="font-size:13px;color:#52657b">No event selection or payment. The currently approved waiver must be activated by a director before signatures can be accepted. Adults 18+ only in this first connected release.</p>
+<div id="uw-status" role="status" aria-live="polite">Loading current universal waiver…</div>
+<div id="uw-signing" hidden>
+<h3 id="uw-title" style="margin-bottom:8px"></h3><div id="uw-text" tabindex="0"></div><p id="uw-version" style="font-size:12px;color:#607083"></p>
+<div class="uw-fields">
+<label>Participant full legal name<input id="uw-name" autocomplete="name" maxlength="120"></label>
+<label>Date of birth<input id="uw-dob" type="date"></label>
+<label>Email for verification<input id="uw-email" type="email" autocomplete="email"></label>
+<label>Phone<input id="uw-phone" type="tel" autocomplete="tel" maxlength="40"></label>
+<label>Emergency contact name<input id="uw-emergency-name" maxlength="120"></label>
+<label>Emergency contact phone<input id="uw-emergency-phone" type="tel" maxlength="40"></label>
+</div>
+<div style="display:flex;gap:9px;flex-wrap:wrap;margin:12px 0"><button type="button" class="secondary" id="uw-send">Send email code</button><label style="max-width:180px">Verification code<input id="uw-otp" inputmode="numeric" autocomplete="one-time-code" maxlength="8"></label><button class="secondary" id="uw-verify" type="button">Verify email</button></div>
+<fieldset style="border:1px solid #d5dee7;border-radius:8px;margin:12px 0"><legend>Optional promotional photo/video permission</legend><label class="uw-check"><input type="radio" name="uw-media" value="yes">Yes, I permit promotional use</label><label class="uw-check"><input type="radio" name="uw-media" value="no">No, I do not permit promotional use</label><p style="font-size:12px;color:#596b7d;margin:5px 0">This choice is separate from participation and the liability waiver.</p></fieldset>
+<label class="uw-check"><input id="uw-accept" type="checkbox">I have read the full universal waiver shown above and agree to its terms.</label>
+<label class="uw-check" style="margin-top:9px"><input id="uw-electronic" type="checkbox">I consent to signing electronically and intend my typed name to serve as my signature.</label>
+<label style="margin-top:12px">Type your full legal name as your signature<input id="uw-signature" maxlength="120" autocomplete="off"></label>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:15px"><button id="uw-sign" type="button" class="btn">Sign universal waiver</button><button id="uw-reload" type="button" class="secondary">Reload current terms</button></div>
+</div>
+<div id="uw-dir"><details><summary><strong>Director tools</strong> — activate approved universal waiver or inspect signed records</summary>
+<p style="font-size:12px;color:#52657b">Requires an authorized director session. Activation is separate from event-specific waiver assignments. Use only a legally reviewed waiver version.</p>
+<div class="uw-fields"><label>Director email<input id="uw-dir-email" type="email"></label><label>Director sign-in code<input id="uw-dir-code" inputmode="numeric" maxlength="8"></label></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button id="uw-dir-send" class="secondary" type="button">Send director code</button><button id="uw-dir-verify" class="secondary" type="button">Verify director code</button><button id="uw-dir-load" class="secondary" type="button">Load waiver library</button></div>
+<label>Approved immutable waiver version<select id="uw-dir-waiver"><option value="">Select an existing version</option></select></label>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button id="uw-dir-activate" class="btn" type="button">Activate selected universal waiver</button><button id="uw-dir-deactivate" class="secondary" type="button">Deactivate signing</button><button id="uw-dir-ledger" class="secondary" type="button">Show last 100 signatures</button></div>
+<div id="uw-director-status" role="status">No director operation performed.</div>
+<div id="uw-ledger" style="margin-top:9px;overflow:auto"></div>
+</details></div>
+</section>
+<div class="notice"><strong>Prelaunch development workspace.</strong> Director and participant preview can be tested without signing in and never writes to Supabase. Connected director operations and real participant submissions still require server authorization. Paid, team and minor submissions and PayPal capture remain disabled.</div>
 <section id="dev-director" class="dev-workspace" aria-label="Director development workspace">
  <div class="dev-heading"><div><span class="dev-chip">LOCAL PREVIEW · NO LOGIN</span><h2>Director workspace</h2><p>Build and review registration settings without authentication. Changes in this workspace stay in this browser and are <strong>not written to Supabase</strong>.</p></div><button id="dev-reset" class="secondary" type="button">Reset local preview</button></div>
  <div class="dev-grid"><label>Offering title<input id="dev-title" value="Winter 2027"></label><label>Registration type<select id="dev-kind"><option value="individual">Individual</option><option value="team">Team</option><option value="substitute">Substitute</option></select></label><label>Fee ($)<input id="dev-fee" type="number" min="0" step="0.01" value="0"></label><label>Capacity<input id="dev-capacity" type="number" min="1" value="2"></label><label>Opening date<input id="dev-open" type="date" value="2026-11-01"></label><label>Closing date<input id="dev-close" type="date" value="2027-01-22"></label><label>Minimum age<input id="dev-age" type="number" min="0" max="120" value="18"></label><label>Waiver title<input id="dev-waiver" value="R2.2 Fictional Registration Test Agreement"></label></div>
@@ -792,4 +824,40 @@ async function handleReturn(){const params=new URLSearchParams(location.search);
  }catch(err){say('Payment confirmation needs reconciliation: '+err.message+'\nOrder: '+saved.order_id+'\nDo not initiate a second payment automatically.');}}
 window.addEventListener('load',handleReturn);
 })();
-</script></body></html>
+</script><style>
+#universal-workspace{background:#fff;border:1px solid #dce3eb;border-radius:14px;padding:20px;margin:14px 0}#universal-workspace .uw-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#universal-workspace label{display:grid;gap:5px;font-size:13px;font-weight:650}#universal-workspace input,#universal-workspace select{border:1px solid #bdcbd8;border-radius:8px;padding:10px;width:100%}#universal-workspace .uw-check{display:flex;align-items:flex-start;gap:8px;font-weight:400}#universal-workspace .uw-check input{width:auto;margin-top:3px}#uw-text{white-space:pre-wrap;border:1px solid #d5dee7;background:#f7f9fb;padding:16px;border-radius:9px;max-height:360px;overflow:auto;font-size:14px}#uw-status,#uw-director-status{white-space:pre-wrap;padding:11px;background:#eef3f8;border-radius:8px;font-size:13px}#uw-sign[disabled]{opacity:.5}body.uw-standalone .shell>*:not(#universal-workspace){display:none!important}body.uw-standalone footer{display:none!important}body.uw-standalone .shell{max-width:710px}#uw-dir{border-top:1px solid #dce3eb;margin-top:22px;padding-top:15px}#uw-dir details{margin-top:10px}#uw-dir select{max-width:100%}@media(max-width:620px){#universal-workspace .uw-fields{grid-template-columns:1fr}#universal-workspace{padding:14px}}
+</style>
+
+<script>
+(()=>{'use strict';
+const e=id=>document.getElementById(id),say=s=>e('uw-status').textContent=s,dsay=s=>e('uw-director-status').textContent=s;
+let packet=null;
+const client=()=>window.RHQ_AUTH.client(window.RHQ_AUTH.publicKey());
+async function rpc(name,args){const {data,error}=await client().rpc(name,args||{});if(error)throw Error(error.message);return data;}
+async function load(){e('uw-signing').hidden=true;packet=null;try{const p=await rpc('rhq_universal_public_packet_v1');if(!p.active){say('Universal signing is not yet activated. A director must select and approve the current waiver version.');return;}packet=p;e('uw-title').textContent=p.title;e('uw-text').textContent=p.content;e('uw-version').textContent='Version '+p.version_label+' · SHA-256 '+p.content_sha256.slice(0,16)+'…';e('uw-signing').hidden=false;say('Current waiver ready. Please read all terms, verify your email, and sign.');}catch(err){say('Universal waiver backend not ready: '+err.message);}}
+async function send(email){if(!email?.includes('@'))throw Error('Enter your email address');const {error}=await client().auth.signInWithOtp({email,options:{shouldCreateUser:true}});if(error)throw Error(error.message);}
+async function verify(email,token){const {error}=await client().auth.verifyOtp({email,token,type:'email'});if(error)throw Error(error.message);}
+e('uw-send').onclick=async()=>{try{await send(e('uw-email').value.trim());say('Check your email for the verification code.')}catch(err){say(err.message)}};
+e('uw-verify').onclick=async()=>{try{await verify(e('uw-email').value.trim(),e('uw-otp').value.trim());say('Email verified. You can complete signing now.')}catch(err){say(err.message)}};
+e('uw-sign').onclick=async()=>{const btn=e('uw-sign');btn.disabled=true;try{
+ if(!packet)throw Error('Reload the current universal waiver');
+ const {data:{user},error:ue}=await client().auth.getUser();if(ue||!user||!user.email_confirmed_at)throw Error('Verify the participant email first');
+ if(user.email?.toLowerCase()!==e('uw-email').value.trim().toLowerCase())throw Error('Signed-in email does not match form email');
+ const media=document.querySelector('input[name="uw-media"]:checked')?.value;if(!media)throw Error('Choose yes or no for media permission');
+ if(!e('uw-accept').checked||!e('uw-electronic').checked)throw Error('Review both signing acknowledgments');
+ if(!confirm('Electronically sign the universal waiver version shown above? Your signature will be recorded and cannot be edited.'))return;
+ const data=await rpc('rhq_universal_sign_adult_v1',{p_waiver_version_id:packet.waiver_version_id,p_waiver_fingerprint:packet.content_sha256,p_name:e('uw-name').value,p_date_of_birth:e('uw-dob').value,p_phone:e('uw-phone').value,p_emergency_name:e('uw-emergency-name').value,p_emergency_phone:e('uw-emergency-phone').value,p_signature_name:e('uw-signature').value,p_media_permission:media,p_waiver_accepted:true,p_electronic_consent:true});
+ say(data.signed?(data.already_signed?'This account already signed this waiver version.':'Universal waiver signed and saved successfully.')+' Confirmation ID: '+data.signature_id:'Signature not confirmed');
+ }catch(err){say('Signature not confirmed: '+err.message)}finally{btn.disabled=false;}};
+e('uw-reload').onclick=load;
+e('uw-dir-send').onclick=async()=>{try{await send(e('uw-dir-email').value.trim());dsay('Director email code sent.')}catch(err){dsay(err.message)}};
+e('uw-dir-verify').onclick=async()=>{try{await verify(e('uw-dir-email').value.trim(),e('uw-dir-code').value.trim());dsay('Director email verified. Load the waiver library.')}catch(err){dsay(err.message)}};
+e('uw-dir-load').onclick=async()=>{try{const [lib,status]=await Promise.all([rpc('rhq_r22_director_waivers_v1'),rpc('rhq_universal_director_manage_v1',{p_action:'status'})]);const select=e('uw-dir-waiver');select.replaceChildren(new Option('Select an existing version',''));for(const w of lib.items||[])select.add(new Option(w.title+' · '+w.version_label,w.id));if(status.active_waiver_version_id)select.value=status.active_waiver_version_id;dsay('Loaded '+(lib.items||[]).length+' versions. Current active ID: '+(status.active_waiver_version_id||'none')+'. Signed records: '+status.total_signatures);}catch(err){dsay(err.message)}};
+e('uw-dir-activate').onclick=async()=>{try{const id=e('uw-dir-waiver').value;if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Select a waiver version');if(!confirm('Activate this legally reviewed waiver for ALL standalone Sovereign Sports adult signing?'))return;await rpc('rhq_universal_director_manage_v1',{p_action:'activate',p_waiver_version_id:id});dsay('Universal waiver activated.');await load();}catch(err){dsay(err.message)}};
+e('uw-dir-deactivate').onclick=async()=>{try{if(!confirm('Disable new universal signatures? Historical evidence is preserved.'))return;await rpc('rhq_universal_director_manage_v1',{p_action:'deactivate'});dsay('Universal signing deactivated.');await load();}catch(err){dsay(err.message)}};
+e('uw-dir-ledger').onclick=async()=>{try{const data=await rpc('rhq_universal_director_manage_v1',{p_action:'ledger'});const box=e('uw-ledger');box.replaceChildren();for(const s of data.signatures||[]){const line=document.createElement('p');line.textContent=s.participant_name+' · '+new Date(s.signed_at).toLocaleString()+' · '+s.id;box.append(line)}dsay('Signed records: '+data.total_signatures+' (most recent 100 shown)');}catch(err){dsay(err.message)}};
+if(new URLSearchParams(location.search).get('waiver')==='universal'){document.body.classList.add('uw-standalone');e('uw-link').hidden=true;}
+load();
+})();
+</script>
+</body></html>
