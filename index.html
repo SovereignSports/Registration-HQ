@@ -30,7 +30,21 @@
 /* R1.6: one focused director area; infrequent configuration stays collapsed. */
 .uw-director-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.uw-director-heading h2{margin:0;font-size:21px}.uw-director-heading p{margin:3px 0 0;font-size:13px;color:#607083}.uw-director-heading a{text-decoration:none;font-size:13px}.uw-director-actions{display:flex;gap:9px;flex-wrap:wrap;margin:17px 0}.uw-director-actions button{min-height:42px}#uw-ledger{display:grid;gap:8px;margin-top:10px}#uw-ledger .uw-ledger-row{padding:11px 13px;border:1px solid #dce3eb;border-radius:9px;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}#uw-ledger time{color:#64748b;font-size:12px}#uw-ledger .uw-ledger-label{font-weight:650}.uw-admin-advanced{margin-top:17px;border-top:1px solid #dce3eb;padding-top:15px}.uw-admin-advanced summary{cursor:pointer;font-weight:700;color:#324b60}.uw-admin-advanced>label,.uw-admin-new>label{display:grid;gap:5px;margin-top:12px;font-size:13px;font-weight:650}.uw-admin-advanced :is(input,select,textarea){width:100%;border:1px solid #bdcbd8;border-radius:8px;padding:10px;font:inherit}.uw-admin-new{border:1px solid #dce3eb;border-radius:9px;margin:15px 0;padding:12px}.uw-admin-note{font-size:12px;color:#607083}#uw-director-status:empty{display:none}#uw-dir[hidden]{display:none!important}
 </style><style id="r244-restore-style">.approved-public-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap;width:100%;color:#172e47;padding:8px 0}.approved-public-heading span{font-size:12px;color:#617489}#live-catalog{max-width:100%}#approved-public-frame{max-width:100%}#connected-registration-tests summary:focus-visible{outline:2px solid #b58d49;outline-offset:4px}</style></head><body>
-<header class="top"><div><div class="eyebrow">SOVEREIGN SPORTS</div><h1>Registration HQ <span style="font-weight:400;font-size:13px;color:#cbd6e0">/ Universal Waiver R1.6</span></h1><p>Director configuration preserved · Verified adult free-registration test</p></div><div class="pill">DEVELOPMENT · NOT LIVE</div></header>
+<header class="top" id="rhq-site-header"><div><div class="eyebrow">SOVEREIGN SPORTS</div><h1>Registration HQ</h1><p>Director workspace · Registration features in development</p></div><div class="pill">REGISTRATION DEVELOPMENT</div></header>
+<script id="rhq-public-route-branding">
+// Public waiver is operational; other Registration HQ modules remain under development.
+(()=>{
+  const route=new URLSearchParams(window.location.search).get('waiver');
+  if(route!=='universal'&&route!=='thank-you')return;
+  const header=document.getElementById('rhq-site-header');
+  header.replaceChildren();
+  const brand=document.createElement('div');
+  const eyebrow=document.createElement('div');eyebrow.className='eyebrow';eyebrow.textContent='SOVEREIGN SPORTS';
+  const title=document.createElement('h1');title.textContent=route==='thank-you'?'Waiver Confirmation':'Universal Participant Waiver';
+  brand.append(eyebrow,title);header.append(brand);
+  document.title='Sovereign Sports · '+(route==='thank-you'?'Waiver Confirmation':'Universal Participant Waiver');
+})();
+</script>
 <main class="shell">
 <section id="universal-workspace" aria-labelledby="uw-heading">
 <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div><div style="font-size:11px;color:#896c36;font-weight:800;letter-spacing:.1em">SOVEREIGN SPORTS</div><h2 id="uw-heading" style="margin:3px 0">Universal Participant Waiver</h2><p style="margin:3px 0;color:#53677b">Open play · leagues · tournaments · other Sovereign Sports activities</p></div><a id="uw-link" href="?waiver=universal" style="font-size:13px">Open standalone signing page</a></div>
