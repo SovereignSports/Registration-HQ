@@ -26,8 +26,11 @@
 #intake-step-error{font-size:13px;color:#9b3e3e;min-height:18px}
 #intake-step-nav button{min-height:42px}
 @media(max-width:620px){#intake-step-nav button{flex:1}#intake-stepper{gap:4px}.intake-step-pill{font-size:11px;padding:5px 8px}}
+
+/* R1.6: one focused director area; infrequent configuration stays collapsed. */
+.uw-director-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.uw-director-heading h2{margin:0;font-size:21px}.uw-director-heading p{margin:3px 0 0;font-size:13px;color:#607083}.uw-director-heading a{text-decoration:none;font-size:13px}.uw-director-actions{display:flex;gap:9px;flex-wrap:wrap;margin:17px 0}.uw-director-actions button{min-height:42px}#uw-ledger{display:grid;gap:8px;margin-top:10px}#uw-ledger .uw-ledger-row{padding:11px 13px;border:1px solid #dce3eb;border-radius:9px;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}#uw-ledger time{color:#64748b;font-size:12px}#uw-ledger .uw-ledger-label{font-weight:650}.uw-admin-advanced{margin-top:17px;border-top:1px solid #dce3eb;padding-top:15px}.uw-admin-advanced summary{cursor:pointer;font-weight:700;color:#324b60}.uw-admin-advanced>label,.uw-admin-new>label{display:grid;gap:5px;margin-top:12px;font-size:13px;font-weight:650}.uw-admin-advanced :is(input,select,textarea){width:100%;border:1px solid #bdcbd8;border-radius:8px;padding:10px;font:inherit}.uw-admin-new{border:1px solid #dce3eb;border-radius:9px;margin:15px 0;padding:12px}.uw-admin-note{font-size:12px;color:#607083}#uw-director-status:empty{display:none}#uw-dir[hidden]{display:none!important}
 </style><style id="r244-restore-style">.approved-public-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap;width:100%;color:#172e47;padding:8px 0}.approved-public-heading span{font-size:12px;color:#617489}#live-catalog{max-width:100%}#approved-public-frame{max-width:100%}#connected-registration-tests summary:focus-visible{outline:2px solid #b58d49;outline-offset:4px}</style></head><body>
-<header class="top"><div><div class="eyebrow">SOVEREIGN SPORTS</div><h1>Registration HQ <span style="font-weight:400;font-size:13px;color:#cbd6e0">/ R2.4.3 guided registration</span></h1><p>Director configuration preserved · Verified adult free-registration test</p></div><div class="pill">DEVELOPMENT · NOT LIVE</div></header>
+<header class="top"><div><div class="eyebrow">SOVEREIGN SPORTS</div><h1>Registration HQ <span style="font-weight:400;font-size:13px;color:#cbd6e0">/ Universal Waiver R1.6</span></h1><p>Director configuration preserved · Verified adult free-registration test</p></div><div class="pill">DEVELOPMENT · NOT LIVE</div></header>
 <main class="shell">
 <section id="universal-workspace" aria-labelledby="uw-heading">
 <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div><div style="font-size:11px;color:#896c36;font-weight:800;letter-spacing:.1em">SOVEREIGN SPORTS</div><h2 id="uw-heading" style="margin:3px 0">Universal Participant Waiver</h2><p style="margin:3px 0;color:#53677b">Open play · leagues · tournaments · other Sovereign Sports activities</p></div><a id="uw-link" href="?waiver=universal" style="font-size:13px">Open standalone signing page</a></div>
@@ -69,23 +72,25 @@
 
 </section>
 <div class="notice"><strong>Prelaunch development workspace.</strong> Director and participant preview can be tested without signing in and never writes to Supabase. Connected director operations and real participant submissions still require server authorization. Paid, team and minor submissions and PayPal capture remain disabled.</div>
-<section id="uw-dir" class="dev-workspace" aria-label="Universal waiver director management">
-  <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div><h2 style="margin:0">Waivers &amp; Releases</h2><p style="font-size:13px;color:#52657b;margin:4px 0 0">Universal waiver management · Uses your existing authorized Registration HQ director session.</p></div><a href="?waiver=universal" target="_blank" rel="noopener">View public signing page</a></div>
-  <p style="font-size:12px;color:#52657b">Annual editions: prepare a new immutable version, then activate that year with its covered venues. Historical signatures remain unchanged. The 2027 edition will need activation in 2027.</p>
-  <details style="margin:10px 0;padding:10px;border:1px solid #dce3eb;border-radius:9px"><summary style="cursor:pointer;font-weight:700">Create an annual waiver version</summary>
-  <p style="font-size:12px;color:#52657b">Paste the approved document text; a saved version cannot be edited. Do not include drafting notes. This does not activate the waiver.</p>
-  <label style="display:grid;gap:4px">Title<input id="uw-new-title" value="Sovereign Sports 2026 Universal Participant Agreement" maxlength="160"></label>
-  <label style="display:grid;gap:4px">Edition year<select id="uw-new-year"><option value="2026">2026</option><option value="2027">2027</option></select></label>
-  <label style="display:grid;gap:4px">Agreement text<textarea id="uw-new-content" rows="8" placeholder="Paste the finalized agreement without drafting notes" style="width:100%;padding:10px"></textarea></label>
-  <button id="uw-new-create" type="button" class="secondary">Save immutable draft version</button>
+<section id="uw-dir" class="dev-workspace uw-director-simple" aria-label="Universal waiver director management">
+  <div class="uw-director-heading"><div><h2>Waivers &amp; Releases</h2><p>2026 universal waiver and signed participant records</p></div><a class="secondary" href="?waiver=universal" target="_blank" rel="noopener">Open signing form</a></div>
+  <div class="uw-director-actions"><button id="uw-dir-ledger" type="button" class="btn">View signed waivers</button><button id="uw-dir-load" type="button" class="secondary">Waiver status</button></div>
+  <div id="uw-director-status" role="status" aria-live="polite">Select an action to view records or status using your existing director session.</div>
+  <div id="uw-ledger" aria-label="Recent signed waiver records"></div>
+  <details id="uw-annual-settings" class="uw-admin-advanced"><summary>Manage annual waiver editions</summary>
+    <p class="uw-admin-note">Only change these settings when preparing a new edition or updating covered venues. Signed records are never changed.</p>
+    <label>Active waiver version<select id="uw-dir-waiver"><option value="">Select an existing version</option></select></label>
+    <label>Edition year<select id="uw-edition-year"><option value="2026">2026</option><option value="2027">2027</option></select></label>
+    <label>Covered venues (one per line)<textarea id="uw-covered-venues" rows="3" placeholder="Venue name and city, Kentucky"></textarea></label>
+    <div class="uw-director-actions"><button id="uw-dir-activate" type="button" class="btn">Activate selected edition</button><button id="uw-dir-deactivate" type="button" class="secondary">Pause new signatures</button></div>
+    <details class="uw-admin-new"><summary>Create next year's document</summary>
+      <p class="uw-admin-note">Creates an inactive, immutable document. Review the text before activation.</p>
+      <label>Title<input id="uw-new-title" value="Sovereign Sports 2027 Universal Participant Agreement" maxlength="160"></label>
+      <label>Edition year<select id="uw-new-year"><option value="2026">2026</option><option value="2027" selected>2027</option></select></label>
+      <label>Agreement text<textarea id="uw-new-content" rows="8" placeholder="Paste the reviewed agreement text"></textarea></label>
+      <button id="uw-new-create" type="button" class="secondary">Save draft version</button>
+    </details>
   </details>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button id="uw-dir-load" class="secondary" type="button">Load waivers</button><button id="uw-dir-ledger" class="secondary" type="button">View signed records</button></div>
-  <label style="display:grid;gap:5px;font-size:13px;font-weight:650">Approved waiver version<select id="uw-dir-waiver"><option value="">Select an existing version</option></select></label>
-  <label style="display:grid;gap:5px;font-size:13px;font-weight:650">Edition year<select id="uw-edition-year"><option value="2026">2026</option><option value="2027">2027</option></select></label>
-  <label style="display:grid;gap:5px;font-size:13px;font-weight:650">Covered venues (one venue per line)<textarea id="uw-covered-venues" rows="3" placeholder="Facility and city, Kentucky" style="padding:10px"></textarea></label>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button id="uw-dir-activate" class="btn" type="button">Activate annual edition</button><button id="uw-dir-deactivate" class="secondary" type="button">Pause universal signing</button></div>
-  <div id="uw-director-status" role="status" aria-live="polite">Use the existing Director Hub sign-in, then select Load waivers.</div>
-  <div id="uw-ledger" style="margin-top:9px;overflow:auto"></div>
 </section>
 <section id="dev-director" class="dev-workspace" aria-label="Director development workspace">
  <div class="dev-heading"><div><span class="dev-chip">LOCAL PREVIEW · NO LOGIN</span><h2>Director workspace</h2><p>Build and review registration settings without authentication. Changes in this workspace stay in this browser and are <strong>not written to Supabase</strong>.</p></div><button id="dev-reset" class="secondary" type="button">Reset local preview</button></div>
@@ -939,7 +944,7 @@ e('uw-sign').onclick=async()=>{
   });
   if(!data?.signed)throw Error('The server did not confirm your signature');
   // Navigate only after the server explicitly confirms the saved signature.
-  const thankYouUrl=new URL(location.href);thankYouUrl.searchParams.set('waiver','thank-you');
+  const thankYouUrl=new URL(location.href);thankYouUrl.searchParams.set('waiver','thank-you');try{sessionStorage.setItem('rhq-universal-submission-result',data.already_signed?'existing':'new')}catch{}
   location.replace(thankYouUrl.toString());
  }catch(err){uwError('Signature not confirmed: '+err.message)}finally{btn.disabled=false;}
 };
@@ -948,14 +953,14 @@ e('uw-dir-load').onclick=async()=>{try{const [lib,status,edition]=await Promise.
 e('uw-dir-activate').onclick=async()=>{try{const id=e('uw-dir-waiver').value;const year=Number(e('uw-edition-year').value);const venues=e('uw-covered-venues').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Select an annual waiver version');if(!venues.length)throw Error('List the covered venues first');if(!confirm('Activate the '+year+' waiver for new adult signatures at the '+venues.length+' listed venue(s)? Existing signatures will remain unchanged.'))return;await directorRpc('rhq_universal_activate_edition_v1',{p_edition_year:year,p_waiver_version_id:id,p_covered_venues:venues});dsay(year+' universal waiver activated for '+venues.length+' venue(s).');await load();}catch(err){dsay(err.message)}};
 e('uw-new-create').onclick=async()=>{const btn=e('uw-new-create');btn.disabled=true;try{const year=e('uw-new-year').value;const title=e('uw-new-title').value.trim();const content=e('uw-new-content').value.trim();if(!title.includes(year))throw Error('Include edition year '+year+' in title');if(content.length<50)throw Error('Paste the complete reviewed agreement text');if(!confirm('Save this '+year+' document as an immutable waiver version? It will NOT become active.'))return;const data=await directorRpc('rhq_r22_create_waiver_version_v1',{p_title:title,p_version_label:year,p_content:content});dsay('Saved '+year+' edition as a new immutable version: '+data.waiver_version_id+'. Select Load waivers to activate it when appropriate.');e('uw-new-content').value='';}catch(err){dsay(err.message)}finally{btn.disabled=false;}};
 e('uw-dir-deactivate').onclick=async()=>{try{if(!confirm('Disable new universal signatures? Historical evidence is preserved.'))return;await directorRpc('rhq_universal_director_manage_v1',{p_action:'deactivate'});dsay('Universal signing deactivated.');await load();}catch(err){dsay(err.message)}};
-e('uw-dir-ledger').onclick=async()=>{try{const data=await directorRpc('rhq_universal_director_manage_v1',{p_action:'ledger'});const box=e('uw-ledger');box.replaceChildren();for(const s of data.signatures||[]){const line=document.createElement('p');line.textContent=s.participant_name+' · '+new Date(s.signed_at).toLocaleString()+' · '+s.id;box.append(line)}dsay('Signed records: '+data.total_signatures+' (most recent 100 shown)');}catch(err){dsay(err.message)}};
+e('uw-dir-ledger').onclick=async()=>{try{const data=await directorRpc('rhq_universal_director_manage_v1',{p_action:'ledger'});const box=e('uw-ledger');box.replaceChildren();for(const s of data.signatures||[]){const line=document.createElement('div');line.className='uw-ledger-row';const label=document.createElement('span');label.className='uw-ledger-label';label.textContent=s.participant_name;const time=document.createElement('time');time.dateTime=s.signed_at;time.textContent=new Date(s.signed_at).toLocaleString();line.append(label,time);box.append(line)}dsay('Signed waivers: '+data.total_signatures+' (latest 100 shown). Historical submissions are preserved.');}catch(err){dsay(err.message)}};
 // Director waiver management belongs only to the existing Director workspace tab.
 function syncDirectorVisibility(){const publicTab=document.querySelector('[data-tab="public"].selected');e('uw-dir').hidden=!!publicTab;}
 document.querySelectorAll('[data-tab]').forEach(tab=>tab.addEventListener('click',()=>queueMicrotask(syncDirectorVisibility)));
 syncDirectorVisibility();
 if(new URLSearchParams(location.search).get('waiver')==='thank-you'){
  document.body.classList.add('uw-standalone','uw-confirmed');
- e('uw-link').hidden=true;e('uw-signing').hidden=true;e('uw-thank-you').hidden=false;
+ e('uw-link').hidden=true;e('uw-signing').hidden=true;e('uw-thank-you').hidden=false;try{const state=sessionStorage.getItem('rhq-universal-submission-result');sessionStorage.removeItem('rhq-universal-submission-result');if(state==='existing'){e('uw-thank-you-heading').textContent='Your waiver is already on file';e('uw-thank-you-heading').nextElementSibling.textContent='A current signature for this agreement was previously recorded. No duplicate was created.'}}catch{}
 }else if(new URLSearchParams(location.search).get('waiver')==='universal'){
  document.body.classList.add('uw-standalone');e('uw-link').hidden=true;
  const start=()=>load();
