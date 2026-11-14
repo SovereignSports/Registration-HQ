@@ -944,7 +944,7 @@ e('uw-sign').onclick=async()=>{
   });
   if(!data?.signed)throw Error('The server did not confirm your signature');
   // Navigate only after the server explicitly confirms the saved signature.
-  const thankYouUrl=new URL(location.href);thankYouUrl.searchParams.set('waiver','thank-you');try{sessionStorage.setItem('rhq-universal-submission-result',data.already_signed?'existing':'new')}catch{}
+  const thankYouUrl=new URL(location.href);thankYouUrl.searchParams.set('waiver','thank-you');thankYouUrl.searchParams.delete('result');if(data.already_signed===true)thankYouUrl.searchParams.set('result','already-on-file');
   location.replace(thankYouUrl.toString());
  }catch(err){uwError('Signature not confirmed: '+err.message)}finally{btn.disabled=false;}
 };
@@ -960,7 +960,7 @@ document.querySelectorAll('[data-tab]').forEach(tab=>tab.addEventListener('click
 syncDirectorVisibility();
 if(new URLSearchParams(location.search).get('waiver')==='thank-you'){
  document.body.classList.add('uw-standalone','uw-confirmed');
- e('uw-link').hidden=true;e('uw-signing').hidden=true;e('uw-thank-you').hidden=false;try{const state=sessionStorage.getItem('rhq-universal-submission-result');sessionStorage.removeItem('rhq-universal-submission-result');if(state==='existing'){e('uw-thank-you-heading').textContent='Your waiver is already on file';e('uw-thank-you-heading').nextElementSibling.textContent='A current signature for this agreement was previously recorded. No duplicate was created.'}}catch{}
+ e('uw-link').hidden=true;e('uw-signing').hidden=true;e('uw-thank-you').hidden=false;if(new URLSearchParams(location.search).get('result')==='already-on-file'){e('uw-thank-you-heading').textContent='Your waiver is already on file';e('uw-thank-you-heading').nextElementSibling.textContent='A current signature for this agreement was previously recorded. No duplicate was created.';}
 }else if(new URLSearchParams(location.search).get('waiver')==='universal'){
  document.body.classList.add('uw-standalone');e('uw-link').hidden=true;
  const start=()=>load();
