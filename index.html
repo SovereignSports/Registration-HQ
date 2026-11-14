@@ -55,10 +55,22 @@
   <section class="uw-card" data-uw-step="0" aria-label="Participant details">
     <div class="uw-kicker">Participant details</div><h3>Tell us about yourself</h3><p class="uw-subtitle">We’ll use this information for your waiver record.</p>
     <div class="uw-fields">
-      <label>Full legal name<input id="uw-name" autocomplete="name" maxlength="120"></label>
+      <label>Participant full legal name<input id="uw-name" autocomplete="name" maxlength="120"></label>
       <label>Date of birth<input id="uw-dob" type="date"></label>
       <label>Email address<input id="uw-email" type="email" autocomplete="email"></label>
       <label>Phone number<input id="uw-phone" type="tel" autocomplete="tel" maxlength="40"></label>
+    </div>
+    <p id="uw-age-note" class="uw-hint" role="status" aria-live="polite"></p>
+    <div id="uw-guardian-fields" hidden>
+      <div class="uw-kicker" style="margin-top:20px">Parent or legal guardian</div>
+      <p class="uw-subtitle">For a participant under 18, their parent or legal guardian completes and signs this agreement.</p>
+      <div class="uw-fields">
+        <label>Parent/guardian full legal name<input id="uw-guardian-name" maxlength="120" autocomplete="off"></label>
+        <label>Relationship to participant<select id="uw-guardian-relationship"><option value="">Select relationship</option><option value="parent">Parent</option><option value="legal_guardian">Legal guardian</option></select></label>
+        <label>Parent/guardian email<input id="uw-guardian-email" type="email" autocomplete="email"></label>
+        <label>Parent/guardian phone<input id="uw-guardian-phone" type="tel" autocomplete="tel" maxlength="40"></label>
+      </div>
+      <label class="uw-check"><input type="checkbox" id="uw-guardian-authority">I confirm that I am the parent or legal guardian with authority to consent to this participant’s activities.</label>
     </div>
   </section>
   <section class="uw-card" data-uw-step="1" aria-label="Emergency contact" hidden>
@@ -75,10 +87,11 @@
   <section class="uw-card" data-uw-step="3" aria-label="Sign waiver" hidden>
     <div class="uw-kicker">Final step</div><h3>Review and sign</h3><p class="uw-subtitle">Your signature acknowledges the agreement you just reviewed.</p>
     <fieldset class="uw-media"><legend>Promotional photo/video permission (optional)</legend><label class="uw-check"><input type="radio" name="uw-media" value="yes">Yes, I permit promotional use</label><label class="uw-check"><input type="radio" name="uw-media" value="no">No, I do not permit promotional use</label><p class="uw-hint">If you don't choose, permission is not granted.</p></fieldset>
-    <label class="uw-check"><input id="uw-accept" type="checkbox">I have read the universal waiver and agree to its terms, including the release of liability.</label>
+    <label class="uw-check"><input id="uw-accept" type="checkbox"><span id="uw-accept-text">I have read the universal waiver and agree to its terms, including the release of liability.</span></label>
     <label class="uw-check"><input id="uw-electronic" type="checkbox">I agree to sign electronically and intend my typed name to serve as my signature.</label>
-    <label class="uw-signature-label">Type your full legal name as your signature<input id="uw-signature" maxlength="120" autocomplete="off"></label>
+    <label class="uw-signature-label"><span id="uw-signer-label">Type your full legal name as your signature</span><input id="uw-signature" maxlength="120" autocomplete="off"></label>
   </section>
+  <div id="uw-early-match" class="uw-early-match" role="status" aria-live="polite" hidden><p data-uw-matched></p><div class="uw-actions"><button type="button" class="btn" data-uw-stop>Finish</button><button type="button" class="secondary" data-uw-continue>Continue anyway</button></div></div>
   <div id="uw-card-error" role="alert" aria-live="polite" hidden></div>
   <div class="uw-actions"><button id="uw-back" type="button" class="secondary" hidden>Back</button><button id="uw-next" type="button" class="btn">Continue</button><button id="uw-sign" type="button" class="btn" hidden>Submit waiver</button></div>
 </div>
@@ -872,6 +885,7 @@ window.addEventListener('load',handleReturn);
 </script><style>
 #universal-workspace{background:#fff;border:1px solid #dce3eb;border-radius:14px;padding:20px;margin:14px 0}#universal-workspace .uw-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#universal-workspace label{display:grid;gap:5px;font-size:13px;font-weight:650}#universal-workspace input,#universal-workspace select{border:1px solid #bdcbd8;border-radius:8px;padding:10px;width:100%}#universal-workspace .uw-check{display:flex;align-items:flex-start;gap:8px;font-weight:400}#universal-workspace .uw-check input{width:auto;margin-top:3px}#uw-document{border:1px solid #d5dee7;background:#f7f9fb;padding:16px;border-radius:9px;max-height:440px;overflow:auto;font-size:14px}#uw-text{white-space:pre-wrap}#uw-venue-section{border-top:1px solid #cbd5e1;margin-top:14px;padding-top:8px}#uw-thank-you[hidden]{display:none!important}body.uw-confirmed #uw-signing,body.uw-confirmed #uw-status,body.uw-confirmed #uw-heading{display:none!important}#uw-status,#uw-director-status{white-space:pre-wrap;padding:11px;background:#eef3f8;border-radius:8px;font-size:13px}#uw-sign[disabled]{opacity:.5}body.uw-standalone .shell>*:not(#universal-workspace){display:none!important}body.uw-standalone footer{display:none!important}body.uw-standalone .shell{max-width:710px}body:not(.uw-standalone) #universal-workspace{display:none!important}body.uw-standalone #uw-dir{display:none!important}#uw-dir{margin-bottom:14px}#uw-dir select{width:100%;padding:10px;border:1px solid #bdcbd8;border-radius:8px}#uw-dir button{min-height:42px}@media(max-width:620px){#universal-workspace .uw-fields{grid-template-columns:1fr}#universal-workspace{padding:14px}}
 
+#universal-workspace .uw-fields > #uw-early-match{grid-column:1 / -1;margin:2px 0 10px}\n#uw-early-match[hidden]{display:none!important}.uw-early-match{padding:14px;border:1px solid #c6d8e1;background:#f1f7fa;border-radius:10px;margin:14px 0}.uw-early-match p{margin:0 0 10px}.uw-early-match .uw-actions{margin-top:0;padding-top:0;border:0;justify-content:flex-start;flex-wrap:wrap}
 /* R1.5 — universal waiver: the approved one-card-at-a-time participant experience */
 #universal-workspace .uw-card{background:white;min-height:260px;padding:8px 0 4px}#universal-workspace .uw-card[hidden]{display:none!important}
 .uw-kicker{text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.13em;color:#96713a}.uw-card h3{font-size:23px;line-height:1.25;margin:8px 0}.uw-subtitle{color:#607083;margin:0 0 20px;font-size:14px}
@@ -889,6 +903,42 @@ const e=id=>document.getElementById(id),say=s=>e('uw-status').textContent=s,dsay
 let packet=null;
 let uwStep=0;
 const uwCards=[...document.querySelectorAll('#uw-signing [data-uw-step]')];
+function uwAge(){
+ const dob=e('uw-dob').value;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(dob))return null;
+ const parts=dob.split('-').map(Number),bday=new Date(Date.UTC(parts[0],parts[1]-1,parts[2],12));
+ if(Number.isNaN(bday.getTime())||bday.getUTCFullYear()!==parts[0]||bday.getUTCMonth()!==parts[1]-1||bday.getUTCDate()!==parts[2])return null;
+ const eastern=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+ const t=Object.fromEntries(eastern.map(x=>[x.type,Number(x.value)]));
+ if(parts[0]>t.year || (parts[0]===t.year&&(parts[1]>t.month||(parts[1]===t.month&&parts[2]>t.day))))return null;
+ return t.year-parts[0]-((t.month<parts[1]||(t.month===parts[1]&&t.day<parts[2]))?1:0);
+}
+function uwIsMinor(){const age=uwAge();return age!==null&&age<18;}
+function uwRefreshRole(){
+ const age=uwAge(),minor=uwIsMinor();
+ e('uw-guardian-fields').hidden=!minor;
+ uwPositionEarlyNotice();
+ e('uw-age-note').textContent=age===null?'':(minor?'A parent or legal guardian must complete and sign for this participant.':'The adult participant signs their own agreement.');
+ e('uw-accept-text').textContent=minor?'I have read Part B and authorize the minor’s participation. I understand this consent does not waive the minor’s claims.':'I have read Part A and agree to its terms, including the release of liability.';
+ e('uw-signer-label').textContent=minor?'Type the parent/guardian full legal name as the electronic signature':'Type your full legal name as your electronic signature';
+ if(packet)uwRenderAgreement();
+}
+function uwRenderAgreement(){
+ const whole=String(packet?.content||'');
+ const a=whole.search(/(?:^|\n)\s*#{0,4}\s*PART A\s*[—–-]/im);
+ const b=whole.search(/(?:^|\n)\s*#{0,4}\s*PART B\s*[—–-]/im);
+ if(a>=0&&b>a){
+  // The stored document is unchanged: present its shared terms plus the appropriate signed Part.
+  const shared=whole.slice(0,a),adult=whole.slice(a,b),minor=whole.slice(b);
+  e('uw-text').textContent=shared+(uwIsMinor()?minor:adult);
+ }else{
+  e('uw-text').textContent=whole;
+ }
+}
+e('uw-dob').addEventListener('change',uwRefreshRole);
+e('uw-dob').addEventListener('input',uwRefreshRole);
+// Card-one inputs are connected to the automatic duplicate precheck below.
+
 function uwShowStep(n){
  uwStep=n;
  uwCards.forEach((card,i)=>{card.hidden=i!==n});
@@ -900,24 +950,134 @@ function uwShowStep(n){
 function uwValidateStep(n){
  const value=id=>e(id).value.trim();
  const phone=v=>(v.replace(/\D/g,'').length>=10&&v.replace(/\D/g,'').length<=15);
+ const email=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+ const age=uwAge(),minor=uwIsMinor();
  if(n===0){
-  if(value('uw-name').length<2) return 'Enter your full legal name.';
-  const dob=value('uw-dob');if(!/^\d{4}-\d{2}-\d{2}$/.test(dob))return 'Enter your date of birth.';
-  const birthday=new Date(dob+'T12:00:00');if(Number.isNaN(birthday.getTime()))return 'Enter a valid date of birth.';
-  const now=new Date();let age=now.getFullYear()-birthday.getFullYear();if(now.getMonth()<birthday.getMonth()||(now.getMonth()===birthday.getMonth()&&now.getDate()<birthday.getDate()))age--;
-  if(age<18) return 'This connected waiver is currently available to adults 18 and older.';
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value('uw-email')))return 'Enter a valid contact email.';
-  if(!phone(value('uw-phone')))return 'Enter a valid phone number.';
+  if(value('uw-name').length<2)return 'Enter the participant’s full legal name.';
+  if(age===null||age<0||age>120)return 'Enter a valid date of birth.';
+  if(!minor&&!email(value('uw-email')))return 'Enter a valid contact email.';
+  if(!minor&&!phone(value('uw-phone')))return 'Enter a valid phone number.';
+  if(minor){
+   if(value('uw-guardian-name').length<2)return 'Enter the parent or guardian’s full legal name.';
+   if(!['parent','legal_guardian'].includes(value('uw-guardian-relationship')))return 'Select the parent or guardian relationship.';
+   if(!email(value('uw-guardian-email')))return 'Enter a valid parent or guardian email.';
+   if(!phone(value('uw-guardian-phone')))return 'Enter a valid parent or guardian phone number.';
+   if(value('uw-email')&&!email(value('uw-email')))return 'Correct the participant contact email or leave it blank.';
+   if(value('uw-phone')&&!phone(value('uw-phone')))return 'Correct the participant phone or leave it blank.';
+   if(!e('uw-guardian-authority').checked)return 'Confirm your parent or guardian authority.';
+  }
  }
  if(n===1){if(value('uw-emergency-name').length<2)return 'Enter an emergency contact name.';if(!phone(value('uw-emergency-phone')))return 'Enter a valid emergency contact phone number.';}
+ if(n===2){
+  if(!packet?.content)return 'The current waiver is unavailable.';
+  if(minor&&!/(?:^|\n)\s*#{0,4}\s*PART B\s*[—–-]/im.test(packet.content))return 'Guardian consent wording is unavailable; please contact Sovereign Sports.';
+ }
  if(n===3){
   if(!e('uw-accept').checked||!e('uw-electronic').checked)return 'Please accept both acknowledgments before signing.';
-  if(value('uw-signature').toLowerCase().replace(/\s+/g,' ')!==value('uw-name').toLowerCase().replace(/\s+/g,' '))return 'Your typed signature must match your full legal name.';
+  const signer=minor?value('uw-guardian-name'):value('uw-name');
+  if(value('uw-signature').toLowerCase().replace(/\s+/g,' ')!==signer.toLowerCase().replace(/\s+/g,' '))return 'The typed signature must match the signer’s full legal name.';
  }
  return '';
 }
 function uwError(message){e('uw-card-error').textContent=message;e('uw-card-error').hidden=false;}
-e('uw-next').onclick=()=>{const err=uwValidateStep(uwStep);if(err){uwError(err);return;}uwShowStep(uwStep+1);document.getElementById('uw-heading').scrollIntoView({block:'start',behavior:'smooth'});};
+// A privacy-limited hint, not identity proof. The final transaction guard is authoritative.
+// Do not query a name alone: require participant DOB and contact email.
+// A minor match is only a hint; the final guardian-specific guard is authoritative.
+let uwEarlyCheckBusy=false,uwEarlyCheckBypassKey='',uwEarlyTimer=null;
+const uwCheckedKeys=new Map();
+function uwEarlyKey(){return [e('uw-name').value.trim().toLowerCase().replace(/\s+/g,' '),e('uw-dob').value,e('uw-email').value.trim().toLowerCase(),uwIsMinor()?'minor':'adult',packet?.waiver_version_id||''].join('|');}
+function uwEarlyReady(){
+ if(!packet||uwAge()===null||e('uw-name').value.trim().length<2)return false;
+ const validEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+ return validEmail(e('uw-email').value);
+}
+// Both age groups check participant details; display the provisional result
+// immediately below the participant contact email, before guardian inputs.
+function uwPositionEarlyNotice(){
+ const notice=e('uw-early-match');
+ const anchor=e('uw-email').closest('label');
+ if(anchor&&anchor.parentNode)anchor.insertAdjacentElement('afterend',notice);
+}
+function uwHideEarlyNotice(){e('uw-early-match').hidden=true;}
+function uwForward(){uwHideEarlyNotice();uwShowStep(uwStep+1);document.getElementById('uw-heading').scrollIntoView({block:'start',behavior:'smooth'});}
+function uwShowEarlyNotice(key){
+ if(key!==uwEarlyKey()||uwStep!==0)return;
+ uwPositionEarlyNotice();
+ const notice=e('uw-early-match');notice.hidden=false;
+ // A matching response may arrive after the signer has scrolled; make sure
+ // the newly shown choice is actually visible without forcing a page change.
+ requestAnimationFrame(()=>{
+  const bounds=notice.getBoundingClientRect();
+  if(bounds.bottom>window.innerHeight-20||bounds.top<0)
+   notice.scrollIntoView({block:'nearest',behavior:'smooth'});
+ });
+ notice.querySelector('[data-uw-matched]').textContent='A current waiver may already be on file for these details. You can finish here, or continue if you need a new signature.';
+ notice.querySelector('[data-uw-stop]').onclick=()=>{const url=new URL(location.href);url.searchParams.set('waiver','thank-you');url.searchParams.set('result','already-on-file');location.assign(url.toString());};
+ notice.querySelector('[data-uw-continue]').onclick=()=>{uwEarlyCheckBypassKey=key;uwForward();};
+}
+// One network call per complete set of identifying inputs, including if Continue is pressed.
+// An in-flight check is shared rather than duplicated; stale results never display.
+let uwEarlyPromise=null,uwEarlyPromiseKey='';
+async function uwCheckEarly(){
+ if(!uwEarlyReady())return null;
+ const key=uwEarlyKey();
+ if(key===uwEarlyCheckBypassKey)return {possible_match:false,bypassed:true};
+ if(uwCheckedKeys.has(key)){
+  const cached=uwCheckedKeys.get(key);
+  if(cached?.possible_match)uwShowEarlyNotice(key);
+  return cached;
+ }
+ if(uwEarlyPromise&&uwEarlyPromiseKey===key)return uwEarlyPromise;
+ if(uwEarlyCheckBusy)return null;
+ uwEarlyCheckBusy=true;uwEarlyPromiseKey=key;
+ uwEarlyPromise=(async()=>{
+  try{
+   const result=await rpc('rhq_universal_early_duplicate_v1',{
+    p_waiver_version_id:packet.waiver_version_id,p_waiver_fingerprint:packet.content_sha256,
+    p_name:e('uw-name').value.trim(),p_date_of_birth:e('uw-dob').value,
+    p_email:e('uw-email').value.trim(),p_guardian_name:null,
+    p_guardian_email:null
+   });
+   // Do not cache rate-limited or failed queries as a successful clearance.
+   if(result&&!result.check_limited)uwCheckedKeys.set(key,result);
+   if(result?.possible_match===true)uwShowEarlyNotice(key);
+   return result;
+  }catch(error){
+   console.warn('Optional waiver precheck unavailable',error.message);
+   return null; // Final signing guard still checks duplicates.
+  }finally{uwEarlyCheckBusy=false;uwEarlyPromise=null;uwEarlyPromiseKey='';}
+ })();
+ return uwEarlyPromise;
+}
+function uwScheduleEarlyCheck(){
+ clearTimeout(uwEarlyTimer);
+ uwHideEarlyNotice();
+ if(uwStep!==0||!uwEarlyReady())return;
+ const key=uwEarlyKey();
+ if(key===uwEarlyCheckBypassKey)return;
+ if(uwCheckedKeys.has(key)){if(uwCheckedKeys.get(key)?.possible_match)uwShowEarlyNotice(key);return;}
+ uwEarlyTimer=setTimeout(()=>{void uwCheckEarly();},700);
+}
+for(const field of document.querySelectorAll('#universal-workspace .uw-card[data-uw-step="0"] input,#universal-workspace .uw-card[data-uw-step="0"] select')){
+ field.addEventListener('input',uwScheduleEarlyCheck);
+ field.addEventListener('change',uwScheduleEarlyCheck);
+}
+e('uw-next').onclick=async()=>{
+ const err=uwValidateStep(uwStep);if(err){uwError(err);return;}
+ if(uwStep!==0||!packet){uwForward();return;}
+ clearTimeout(uwEarlyTimer);
+ const key=uwEarlyKey();
+ if(key===uwEarlyCheckBypassKey){uwForward();return;}
+ if(uwEarlyCheckBusy&&uwEarlyPromiseKey!==key){ // A previous value is being checked; don't block the new input.
+  uwForward();return;
+ }
+ const btn=e('uw-next');btn.disabled=true;
+ try{
+  const result=await uwCheckEarly();
+  if(result?.possible_match===true){uwShowEarlyNotice(key);return;}
+  uwForward();
+ }finally{btn.disabled=false;}
+};
 e('uw-back').onclick=()=>{uwShowStep(Math.max(0,uwStep-1));document.getElementById('uw-heading').scrollIntoView({block:'start',behavior:'smooth'});};
 uwShowStep(0);
 const client=()=>window.RHQ_AUTH.client(window.RHQ_AUTH.publicKey());
@@ -930,11 +1090,13 @@ async function load(){
   const p=await rpc('rhq_universal_public_packet_v1');
   if(!p.active){say('The universal waiver is not currently available for signing.');return;}
   packet=p;
+  uwCheckedKeys.clear();uwEarlyCheckBypassKey='';
   e('uw-title').textContent=p.title;
-  e('uw-text').textContent=p.content;
+  uwRenderAgreement();
   e('uw-venues').textContent=(p.covered_venues||[]).join(' • ');
   e('uw-signing').hidden=false;
   say('');
+  uwRefreshRole();
   uwShowStep(0);
  }catch(err){say('Unable to load the waiver right now. Please try again. ('+err.message+')');}
 }
@@ -943,22 +1105,27 @@ e('uw-sign').onclick=async()=>{
  try{
   if(!packet)throw Error('The current universal waiver is unavailable. Please reopen this page.');
   const validationError=uwValidateStep(3);if(validationError)throw Error(validationError);
-  const name=e('uw-name').value.trim(),email=e('uw-email').value.trim(),signature=e('uw-signature').value.trim();
-  if(!name||!email||!signature)throw Error('Enter your name, contact email and typed signature');
+  const name=e('uw-name').value.trim(),minor=uwIsMinor(),email=e('uw-email').value.trim(),signature=e('uw-signature').value.trim();
+  if(!name||!signature)throw Error('Enter the participant and signer full legal names');
   if(!e('uw-accept').checked||!e('uw-electronic').checked)throw Error('Review both signing acknowledgments');
   const media=document.querySelector('input[name="uw-media"]:checked')?.value||'no';
-  if(!confirm('Sign the universal participant agreement electronically? Your signature will be securely recorded.'))return;
-  const data=await rpc('rhq_universal_sign_guest_adult_v1',{
+  if(!confirm(minor?'Sign the parent/guardian participation consent electronically?':'Sign the adult participant waiver electronically?'))return;
+  const data=await rpc('rhq_universal_sign_guest_v2',{
    p_waiver_version_id:packet.waiver_version_id,
    p_waiver_fingerprint:packet.content_sha256,
    p_name:name,p_date_of_birth:e('uw-dob').value,p_email:email,
    p_phone:e('uw-phone').value,p_emergency_name:e('uw-emergency-name').value,
    p_emergency_phone:e('uw-emergency-phone').value,p_signature_name:signature,
-   p_media_permission:media,p_waiver_accepted:true,p_electronic_consent:true
+   p_media_permission:media,p_waiver_accepted:true,p_electronic_consent:true,
+   p_guardian_name:minor?e('uw-guardian-name').value.trim():null,
+   p_guardian_email:minor?e('uw-guardian-email').value.trim():null,
+   p_guardian_phone:minor?e('uw-guardian-phone').value.trim():null,
+   p_guardian_relationship:minor?e('uw-guardian-relationship').value:null,
+   p_guardian_authority:minor?e('uw-guardian-authority').checked:false
   });
   if(!data?.signed)throw Error('The server did not confirm your signature');
-  // Navigate only after the server explicitly confirms the saved signature.
-  const thankYouUrl=new URL(location.href);thankYouUrl.searchParams.set('waiver','thank-you');thankYouUrl.searchParams.delete('result');if(data.already_signed===true)thankYouUrl.searchParams.set('result','already-on-file');
+  const thankYouUrl=new URL(location.href);thankYouUrl.searchParams.set('waiver','thank-you');thankYouUrl.searchParams.delete('result');
+  if(data.already_signed===true)thankYouUrl.searchParams.set('result','already-on-file');
   location.replace(thankYouUrl.toString());
  }catch(err){uwError('Signature not confirmed: '+err.message)}finally{btn.disabled=false;}
 };
@@ -967,7 +1134,7 @@ e('uw-dir-load').onclick=async()=>{try{const [lib,status,edition]=await Promise.
 e('uw-dir-activate').onclick=async()=>{try{const id=e('uw-dir-waiver').value;const year=Number(e('uw-edition-year').value);const venues=e('uw-covered-venues').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Select an annual waiver version');if(!venues.length)throw Error('List the covered venues first');if(!confirm('Activate the '+year+' waiver for new adult signatures at the '+venues.length+' listed venue(s)? Existing signatures will remain unchanged.'))return;await directorRpc('rhq_universal_activate_edition_v1',{p_edition_year:year,p_waiver_version_id:id,p_covered_venues:venues});dsay(year+' universal waiver activated for '+venues.length+' venue(s).');await load();}catch(err){dsay(err.message)}};
 e('uw-new-create').onclick=async()=>{const btn=e('uw-new-create');btn.disabled=true;try{const year=e('uw-new-year').value;const title=e('uw-new-title').value.trim();const content=e('uw-new-content').value.trim();if(!title.includes(year))throw Error('Include edition year '+year+' in title');if(content.length<50)throw Error('Paste the complete reviewed agreement text');if(!confirm('Save this '+year+' document as an immutable waiver version? It will NOT become active.'))return;const data=await directorRpc('rhq_r22_create_waiver_version_v1',{p_title:title,p_version_label:year,p_content:content});dsay('Saved '+year+' edition as a new immutable version: '+data.waiver_version_id+'. Select Load waivers to activate it when appropriate.');e('uw-new-content').value='';}catch(err){dsay(err.message)}finally{btn.disabled=false;}};
 e('uw-dir-deactivate').onclick=async()=>{try{if(!confirm('Disable new universal signatures? Historical evidence is preserved.'))return;await directorRpc('rhq_universal_director_manage_v1',{p_action:'deactivate'});dsay('Universal signing deactivated.');await load();}catch(err){dsay(err.message)}};
-e('uw-dir-ledger').onclick=async()=>{try{const data=await directorRpc('rhq_universal_director_manage_v1',{p_action:'ledger'});const box=e('uw-ledger');box.replaceChildren();for(const s of data.signatures||[]){const line=document.createElement('div');line.className='uw-ledger-row';const label=document.createElement('span');label.className='uw-ledger-label';label.textContent=s.participant_name;const time=document.createElement('time');time.dateTime=s.signed_at;time.textContent=new Date(s.signed_at).toLocaleString();line.append(label,time);box.append(line)}dsay('Signed waivers: '+data.total_signatures+' (latest 100 shown). Historical submissions are preserved.');}catch(err){dsay(err.message)}};
+e('uw-dir-ledger').onclick=async()=>{try{const data=await directorRpc('rhq_universal_director_ledger_v2');const box=e('uw-ledger');box.replaceChildren();for(const s of data.signatures||[]){const line=document.createElement('div');line.className='uw-ledger-row';const label=document.createElement('span');label.className='uw-ledger-label';label.textContent=s.participant_name+' · '+(s.signer_role==='guardian'?'Minor (guardian signed)':'Adult');const time=document.createElement('time');time.dateTime=s.signed_at;time.textContent=new Date(s.signed_at).toLocaleString();line.append(label,time);box.append(line)}dsay('Signed waivers: '+data.total_signatures+' (latest 100 shown). Historical submissions are preserved.');}catch(err){dsay(err.message)}};
 // Director waiver management belongs only to the existing Director workspace tab.
 function syncDirectorVisibility(){const publicTab=document.querySelector('[data-tab="public"].selected');e('uw-dir').hidden=!!publicTab;}
 document.querySelectorAll('[data-tab]').forEach(tab=>tab.addEventListener('click',()=>queueMicrotask(syncDirectorVisibility)));
